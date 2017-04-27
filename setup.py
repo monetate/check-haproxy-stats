@@ -19,7 +19,7 @@ test_requirements = [
 
 setup(
     name='check_haproxy_stats',
-    version='3.0.0',
+    version='3.1.0',
     description="Check HAProxy related statistics",
     long_description=readme + '\n\n' + history,
     author="Monetate, Inc.",
