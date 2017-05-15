@@ -9,7 +9,7 @@ Check HAProxy related statistics
 Features
 --------
 
-* Check HAProxy HTTP 5xx counts for varios backends
+* Check HAProxy HTTP 5xx counts for various backends
 
 
 Example Usage
