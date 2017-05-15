@@ -5,11 +5,13 @@ check haproxy stats
 
 Check HAProxy related statistics
 
+* Free software: Apache License
+
 
 Features
 --------
 
-* Check HAProxy HTTP 5xx counts for varios backends
+* Check HAProxy HTTP 5xx counts for various backends
 
 
 Example Usage
