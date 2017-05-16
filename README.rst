@@ -5,7 +5,7 @@ check haproxy stats
 
 Check HAProxy related statistics
 
-* Free software: Apache License
+* Free software: MIT License
 
 
 Features
