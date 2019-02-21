@@ -11,17 +11,14 @@ def get_request_stats(backend, base_url_path="127.0.0.1/haproxy/stats", username
     :rtype: :py:class:`tuple(int, int, int, int, int, int)`
     """
     h = haproxystats.HAProxyServer(base_url_path, username, password)
-    sums = (0, 0, 0, 0, 0, 0)
-    matched = False
+    matches = []
     for b in h.backends:
-        if not b.name.startswith(backend):
-            continue
-        sums = tuple(map(sum, zip(sums, (b.hrsp_1xx, b.hrsp_2xx, b.hrsp_3xx, b.hrsp_4xx, b.hrsp_5xx, b.hrsp_other))))
-        matched = True
-    if not matched:
+        if b.name.startswith(backend):
+            matches.append((b.hrsp_1xx, b.hrsp_2xx, b.hrsp_3xx, b.hrsp_4xx, b.hrsp_5xx, b.hrsp_other))
+    if len(matches) == 0:
         raise ValueError("Did not find {0} backend".format(backend))
     else:
-        return sums
+        return tuple(map(sum, zip(*matches)))
 
 
 def get_hrsp_5xx_ratio(backend, base_url_path, username, password, interval):
