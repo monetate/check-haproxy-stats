@@ -15,10 +15,9 @@ def get_request_stats(backend, base_url_path="127.0.0.1/haproxy/stats", username
     for b in h.backends:
         if b.name.startswith(backend):
             matches.append((b.hrsp_1xx, b.hrsp_2xx, b.hrsp_3xx, b.hrsp_4xx, b.hrsp_5xx, b.hrsp_other))
-    if len(matches) == 0:
-        raise ValueError("Did not find {0} backend".format(backend))
-    else:
-        return tuple(map(sum, zip(*matches)))
+    if not matches:
+        raise ValueError("Did not find backends starting with {0}".format(backend))
+    return tuple(map(sum, zip(*matches)))
 
 
 def get_hrsp_5xx_ratio(backend, base_url_path, username, password, interval):
