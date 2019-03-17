@@ -34,8 +34,8 @@ def _get_parser():
     parser.add_argument(
         "--critical-ratio", type=float, default=0.02, help="500x ratio above which we should throw critical.")
     parser.add_argument("--base-url-path", default="127.0.0.1/haproxy/stats")
-    parser.add_argument("--username", required=True, help="Username to login to haproxy stats page.")
-    parser.add_argument("--password", required=True, help="Password to login to haproxy stats page.")
+    parser.add_argument("--username", help="Username to login to haproxy stats page.")
+    parser.add_argument("--password", help="Password to login to haproxy stats page.")
     parser.add_argument("--interval", type=int, default=60, help="Time to observe 500 rates (in seconds).")
     return parser
 
