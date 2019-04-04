@@ -20,7 +20,7 @@ test_requirements = [
 
 setup(
     name='check_haproxy_stats',
-    version='3.3.0',
+    version='3.4.0',
     description="Check HAProxy related statistics",
     long_description=readme + '\n\n' + history,
     author="Monetate, Inc.",
@@ -35,6 +35,7 @@ setup(
         'console_scripts': [
             "check-haproxy-stats-5xx = check_haproxy_stats.check_haproxy_stats_5xx:main",
             "metrics-haproxy-stats-5xx = check_haproxy_stats.metrics_haproxy_stats_5xx:main",
+            "check-haproxy-stats-up = check_haproxy_stats.check_haproxy_stats_up:main",
         ],
     },
     include_package_data=True,
