@@ -44,7 +44,12 @@ def check_haproxy_up_rates(
         sensu_status.update_status('UNKNOWN', 'Unknown exception: {}'.format(str(ex)))
         return sensu_status.status
 
-    if backends and len(found_backend_stats.keys()) != len(backends):
+    if backends:  # if we get extra backends from get_haproxy_services_up_count_for_backends, delete them (e.g. tests)
+        extra_backends = set(found_backend_stats.keys()) - set(backends)
+        for extra_backend in extra_backends:
+            del found_backend_stats[extra_backend]
+
+    if backends and set(found_backend_stats.keys()) != set(backends):
         # Critial, there is a backend not found that was explicitly listed to monitor
         missing_backends = set(backends) - set(found_backend_stats.keys())
         sensu_status.update_status('CRITICAL', 'There are missing backends that were requested to be monitored: {}'.format(missing_backends))
