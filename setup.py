@@ -35,6 +35,7 @@ setup(
         'console_scripts': [
             "check-haproxy-stats-5xx = check_haproxy_stats.check_haproxy_stats_5xx:main",
             "metrics-haproxy-stats-5xx = check_haproxy_stats.metrics_haproxy_stats_5xx:main",
+            "check-haproxy-stats-up = check_haproxy_stats.check_haproxy_stats_up:main",
         ],
     },
     include_package_data=True,
