@@ -24,19 +24,20 @@ def get_haproxy_services_up_count_for_backends(base_url_path, username=None, pas
     found_backend_stats = defaultdict(dict)
     for listener in hs.listeners:  # a list of services found
         if not backends or listener.pxname in backends:
-            backend = found_backend_stats[listener.pxname]
-            if 'count' not in backend:
-                backend['count'] = 0
-                backend['up_count'] = 0
-            backend['count'] += 1
-            if 'UP' in listener.status:
-                backend['up_count'] += 1
+            if listener.status != 'no check':  # ignore servers that aren't checked for status
+                backend = found_backend_stats[listener.pxname]
+                if 'count' not in backend:
+                    backend['count'] = 0
+                    backend['up_count'] = 0
+                backend['count'] += 1
+                if 'UP' in listener.status:
+                    backend['up_count'] += 1
     return found_backend_stats
 
 
 def check_haproxy_up_rates(
         base_url_path, username=None, password=None, backends=None, warning_percent=0.9, critical_percent=0.6,
-        warning_down=None, critical_down=None):
+        warning_down=None, critical_down=None, print_ok=False):
     sensu_status = SensuCheckStatus()
     try:
         found_backend_stats = get_haproxy_services_up_count_for_backends(base_url_path, username, password, backends)
@@ -55,25 +56,39 @@ def check_haproxy_up_rates(
         sensu_status.update_status('CRITICAL', 'There are missing backends that were requested to be monitored: {}'.format(missing_backends))
 
     for backend_name in found_backend_stats:
+        backend_ok = True
         backend = found_backend_stats[backend_name]
         up_percent = float(backend['up_count']) / backend['count']
         down_count = backend['count'] - backend['up_count']
         if up_percent < critical_percent:
+            backend_ok = False
             sensu_status.update_status(
                 'CRITICAL',
-                'Backend {} has a critical percentage of services up ({}%)'.format(backend_name, int(up_percent * 100)))
+                'Backend {} has a critical percentage of services up ({}% / {})'.format(
+                    backend_name, int(up_percent * 100), backend['count']))
         elif up_percent < warning_percent:
+            backend_ok = False
             sensu_status.update_status(
                 'WARNING',
-                'Backend {} has a warning percentage of services up ({}%)'.format(backend_name, int(up_percent * 100)))
+                'Backend {} has a warning percentage of services up ({}% / {})'.format(
+                    backend_name, int(up_percent * 100), backend['count']))
         if critical_down and down_count >= critical_down:
+            backend_ok = False
             sensu_status.update_status(
                 'CRITICAL',
-                'Backend {} has a critical number of services down ({})'.format(backend_name, down_count))
+                'Backend {} has a critical number of services down ({} / {})'.format(
+                    backend_name, down_count, backend['count']))
         elif warning_down and down_count >= warning_down:
+            backend_ok = False
             sensu_status.update_status(
                 'WARNING',
-                'Backend {} has a warning number of services down ({})'.format(backend_name, down_count))
+                'Backend {} has a warning number of services down ({} / {})'.format(
+                    backend_name, down_count, backend['count']))
+        if backend_ok and print_ok:
+            sensu_status.update_status(
+                'OK',
+                'Backend {} has a ok percentage of services up ({}% / {})'.format(
+                    backend_name, int(up_percent * 100), backend['count']))
 
     return sensu_status.status
 
@@ -96,6 +111,7 @@ def _get_parser():
         "--warning-down", type=int, help="Down count at or above which we should throw warning.")
     parser.add_argument(
         "--critical-down", type=int, help="Down count at or above which we should throw critical.")
+    parser.add_argument("--print-ok", action="store_true", default=False)
     return parser
 
 
@@ -116,6 +132,7 @@ def main():
         critical_percent=args.critical_percent,
         warning_down=args.warning_down,
         critical_down=args.critical_down,
+        print_ok=args.print_ok,
     )
     return rc
 
