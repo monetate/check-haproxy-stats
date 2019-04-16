@@ -24,7 +24,7 @@ def get_haproxy_services_up_count_for_backends(base_url_path, username=None, pas
     found_backend_stats = defaultdict(dict)
     for listener in hs.listeners:  # a list of services found
         if not backends or listener.pxname in backends:
-            if listener.status != 'no check':  # ignore servers that aren't checked for status
+            if listener.status not in ['no check', 'MAINT']:  # ignore servers that aren't checked for status
                 backend = found_backend_stats[listener.pxname]
                 if 'count' not in backend:
                     backend['count'] = 0
