@@ -2,4 +2,4 @@
 
 __author__ = """Monetate, Inc."""
 __email__ = 'devops@monetate.com'
-__version__ = '3.2.0'
+__version__ = '3.7.0'

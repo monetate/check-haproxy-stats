@@ -27,6 +27,7 @@ class TestMetrics_Haproxy_Stats_5xx(unittest.TestCase):
         self.assertEqual(args.gmetric_tmax, 1)
         self.assertEqual(args.gmetric_dmax, 2)
 
+    @unittest.skip("gmetric reporting disabled")
     @patch("check_haproxy_stats.haproxy_util.get_hrsp_5xx_ratio")
     @patch("subprocess.check_call")
     @patch("socket.gethostname")
