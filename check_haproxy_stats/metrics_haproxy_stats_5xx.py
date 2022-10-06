@@ -50,13 +50,13 @@ def _report_haproxy_rates(backend, base_url_path, username, password, interval, 
     :return: Exit Code (depending on success)
     :rtype: :py:class:`int`
     """
-    hostname = socket.gethostname()
-    hrsp_5xx_ratio_interval = haproxy_util.get_hrsp_5xx_ratio(backend, base_url_path, username, password, interval)
-    hrsp_5xx_percent_interval = "{0:.2f}".format(hrsp_5xx_ratio_interval * 100)  # convert it to percent
-    command = [gmetric_path, "-d", str(gmetric_dmax), "-x", str(gmetric_tmax), "-n",
-               "haproxy_{0}_{1}_5xx_percent".format(hostname, backend), "-v", str(hrsp_5xx_percent_interval), "-s",
-               "both", "-g", "haproxy", "-t", "float"]
-    subprocess.check_call(command)
+    # hostname = socket.gethostname()
+    # hrsp_5xx_ratio_interval = haproxy_util.get_hrsp_5xx_ratio(backend, base_url_path, username, password, interval)
+    # hrsp_5xx_percent_interval = "{0:.2f}".format(hrsp_5xx_ratio_interval * 100)  # convert it to percent
+    # command = [gmetric_path, "-d", str(gmetric_dmax), "-x", str(gmetric_tmax), "-n",
+    #            "haproxy_{0}_{1}_5xx_percent".format(hostname, backend), "-v", str(hrsp_5xx_percent_interval), "-s",
+    #            "both", "-g", "haproxy", "-t", "float"]
+    # subprocess.check_call(command)
     return 0
 
 
